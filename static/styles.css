@@ -247,91 +247,6 @@ select {
     height: 480px
 }
 
-.timeline-card {
-    padding-bottom: 26px
-}
-
-.timeline-card>p {
-    margin-top: 4px
-}
-
-.progress {
-    height: 6px;
-    border-radius: 8px;
-    background: #e9e8e3;
-    margin: 20px 0
-}
-
-.progress span {
-    display: block;
-    width: 75%;
-    height: 100%;
-    background: var(--teal);
-    border-radius: 8px
-}
-
-.timeline {
-    list-style: none;
-    padding: 0;
-    margin: 0
-}
-
-.timeline li {
-    display: flex;
-    align-items: center;
-    gap: 13px;
-    min-height: 43px;
-    position: relative
-}
-
-.timeline li:before {
-    content: "";
-    height: 24px;
-    width: 24px;
-    border: 1px solid var(--line);
-    border-radius: 50%;
-    background: white;
-    z-index: 1
-}
-
-.timeline li.done:before {
-    content: "✓";
-    display: grid;
-    place-items: center;
-    color: white;
-    background: var(--teal);
-    border-color: var(--teal);
-    font-size: 13px
-}
-
-.timeline li.current:before {
-    content: "5";
-    display: grid;
-    place-items: center;
-    color: var(--teal);
-    border-color: var(--teal)
-}
-
-.timeline li:not(:last-child):after {
-    content: "";
-    position: absolute;
-    width: 1px;
-    height: 20px;
-    background: var(--line);
-    left: 12px;
-    top: 32px
-}
-
-.timeline b {
-    font-weight: 500
-}
-
-.timeline small {
-    margin-left: auto;
-    color: var(--muted);
-    font-size: 13px
-}
-
 .algorithm ol {
     padding-left: 22px;
     line-height: 1.9;
@@ -412,10 +327,6 @@ select {
 
     .concept-grid {
         grid-template-columns: 1fr
-    }
-
-    .timeline b {
-        font-size: 14px
     }
 
     .graph-card {
