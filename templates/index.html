@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Social Network Analyzer</title>
+
+  <!-- The dashboard uses D3 -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+<body>
+  <header class="topbar">
+    <div class="shell">
+      <h1>Social Network Analyzer</h1>
+      <p id="dataset-name">Zachary's Karate Club (1977)</p>
+    </div>
+  </header>
+
+  <main class="shell">
+    <!-- Keep the project focused on the three sections requested. -->
+    <nav class="tabs" aria-label="Dashboard sections">
+      <button class="tab active" data-tab="communities">Communities</button>
+      <button class="tab" data-tab="relationships">Relationships</button>
+      <button class="tab" data-tab="concepts">Concepts</button>
+    </nav>
+
+    <section id="communities" class="pane active">
+      <div class="metrics" id="metrics"></div>
+
+      <article class="card graph-card">
+        <div class="card-heading">
+          <div>
+            <h2>Community network</h2>
+            <p>Colour shows the Louvain community. Select a person to inspect connections.</p>
+          </div>
+          <label class="upload">
+            Load edge list
+            <input id="csv-file" type="file" accept=".csv,text/csv">
+          </label>
+        </div>
+        <div id="network" role="img" aria-label="Interactive social network"></div>
+        <div id="person-detail" class="detail" aria-live="polite">
+          Select a person in the network.
+        </div>
+      </article>
+      <p id="status" class="status" aria-live="polite"></p>
+    </section>
+
+    <section id="relationships" class="pane">
+      <article class="card">
+        <div class="relationship-controls">
+          <label>
+            Person
+            <select id="person-a"></select>
+          </label>
+          <span>and</span>
+          <label>
+            <span class="sr-only">Second person</span>
+            <select id="person-b"></select>
+          </label>
+          <span id="relation-summary" class="muted"></span>
+        </div>
+
+        <h2>Strongest connection</h2>
+        <p class="muted">Shortest path where stronger friendships count as shorter.</p>
+        <div id="path-display" class="path-display"></div>
+        <div id="relationship-network"></div>
+      </article>
+    </section>
+
+    <section id="concepts" class="pane">
+      <article class="card timeline-card">
+        <h2>Project timeline</h2>
+        <p class="muted"><strong>75%</strong> complete for mid-sem review</p>
+        <div class="progress"><span></span></div>
+        <ol class="timeline">
+          <li class="done"><b>Problem definition &amp; dataset</b><small>Done</small></li>
+          <li class="done"><b>Sets, logic &amp; relation functions</b><small>Done</small></li>
+          <li class="done"><b>Louvain community detection</b><small>Done</small></li>
+          <li class="done"><b>Paths, trees &amp; probability</b><small>Done</small></li>
+          <li class="current"><b>Dashboard</b><small>In progress</small></li>
+          <li><b>Testing on a larger network</b><small>After mid-sem</small></li>
+          <li><b>Final report &amp; presentation</b><small>After mid-sem</small></li>
+        </ol>
+      </article>
+
+      <article class="card algorithm">
+        <h2>Algorithm · Louvain modularity</h2>
+        <p class="muted">Finds groups with many friendships inside and fewer between them.</p>
+        <ol>
+          <li>Start with each person in a separate group.</li>
+          <li>Move a person to a neighbouring group when modularity improves.</li>
+          <li>Merge groups and repeat until no improvement is found.</li>
+        </ol>
+        <p class="formula">Q = Σᵢ [ lᵢ / m − ( dᵢ / 2m )² ]</p>
+        <p class="muted small">lᵢ: links within group i · dᵢ: total degree in group i · m: total links</p>
+
+        <!-- Pseudocode is intentionally plain so it can be followed in a review. -->
+        <h3 class="pseudo-heading">Louvain pseudocode</h3>
+        <pre class="pseudocode"><code>function LOUVAIN(graph):
+    give each person their own community
+
+    repeat:
+        improvement = false
+
+        for each person in graph:
+            old_group = person's community
+            best_group = old_group
+            best_gain = 0
+
+            for each neighbouring community:
+                temporarily move person to that community
+                gain = change in modularity
+                undo the temporary move
+
+                if gain &gt; best_gain:
+                    best_gain = gain
+                    best_group = neighbouring community
+
+            move person to best_group
+            if best_group is not old_group:
+                improvement = true
+
+        combine each community into one super-node
+        keep the edge weights between super-nodes
+
+    until no modularity improvement is possible
+
+    return the communities of the original people</code></pre>
+        <p class="muted small">
+          The implementation calls NetworkX's Louvain routine; the steps above show its main idea.
+        </p>
+      </article>
+
+      <article class="card">
+        <h2>Discrete math concepts</h2>
+        <div class="concept-grid">
+          <div>
+            <h3>Sets &amp; logic</h3>
+            <p>People as a set; mutual friends as intersection.</p>
+          </div>
+          <div>
+            <h3>Relations</h3>
+            <p>Friendship is a symmetric relation; communities partition the set.</p>
+          </div>
+          <div>
+            <h3>Graph theory</h3>
+            <p>People are vertices, friendships are edges; paths measure connection.</p>
+          </div>
+          <div>
+            <h3>Counting</h3>
+            <p>Possible pairs among n people: C(n, 2).</p>
+          </div>
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>
