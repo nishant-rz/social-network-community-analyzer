@@ -70,89 +70,71 @@
     </section>
 
     <section id="concepts" class="pane">
-      <article class="card timeline-card">
-        <h2>Project timeline</h2>
-        <p class="muted"><strong>75%</strong> complete for mid-sem review</p>
-        <div class="progress"><span></span></div>
-        <ol class="timeline">
-          <li class="done"><b>Problem definition &amp; dataset</b><small>Done</small></li>
-          <li class="done"><b>Sets, logic &amp; relation functions</b><small>Done</small></li>
-          <li class="done"><b>Louvain community detection</b><small>Done</small></li>
-          <li class="done"><b>Paths, trees &amp; probability</b><small>Done</small></li>
-          <li class="current"><b>Dashboard</b><small>In progress</small></li>
-          <li><b>Testing on a larger network</b><small>After mid-sem</small></li>
-          <li><b>Final report &amp; presentation</b><small>After mid-sem</small></li>
-        </ol>
-      </article>
-
-      <article class="card algorithm">
-        <h2>Algorithm · Louvain modularity</h2>
-        <p class="muted">Finds groups with many friendships inside and fewer between them.</p>
-        <ol>
-          <li>Start with each person in a separate group.</li>
-          <li>Move a person to a neighbouring group when modularity improves.</li>
-          <li>Merge groups and repeat until no improvement is found.</li>
-        </ol>
-        <p class="formula">Q = Σᵢ [ lᵢ / m − ( dᵢ / 2m )² ]</p>
-        <p class="muted small">lᵢ: links within group i · dᵢ: total degree in group i · m: total links</p>
-
-        <!-- Pseudocode is intentionally plain so it can be followed in a review. -->
-        <h3 class="pseudo-heading">Louvain pseudocode</h3>
-        <pre class="pseudocode"><code>function LOUVAIN(graph):
-    give each person their own community
-
-    repeat:
-        improvement = false
-
-        for each person in graph:
-            old_group = person's community
-            best_group = old_group
-            best_gain = 0
-
-            for each neighbouring community:
-                temporarily move person to that community
-                gain = change in modularity
-                undo the temporary move
-
-                if gain &gt; best_gain:
-                    best_gain = gain
-                    best_group = neighbouring community
-
-            move person to best_group
-            if best_group is not old_group:
-                improvement = true
-
-        combine each community into one super-node
-        keep the edge weights between super-nodes
-
-    until no modularity improvement is possible
-
-    return the communities of the original people</code></pre>
-        <p class="muted small">
-          The implementation calls NetworkX's Louvain routine; the steps above show its main idea.
-        </p>
-      </article>
-
       <article class="card">
-        <h2>Discrete math concepts</h2>
+        <h2>Discrete mathematics concepts used</h2>
+        <p class="muted">These course ideas define the network model and explain the dashboard's results.</p>
         <div class="concept-grid">
           <div>
-            <h3>Sets &amp; logic</h3>
-            <p>People as a set; mutual friends as intersection.</p>
+            <h3>Sets and predicates</h3>
+            <p>People form the vertex set V. A friendship predicate is true when an edge joins two people; CSV validation also checks conditions such as positive weight.</p>
           </div>
           <div>
-            <h3>Relations</h3>
-            <p>Friendship is a symmetric relation; communities partition the set.</p>
+            <h3>Relations and functions</h3>
+            <p>Friendship is a symmetric binary relation R ⊆ V × V. The community label is a function c: V → {0, …, k−1}.</p>
+          </div>
+          <div>
+            <h3>Partitions and equivalence classes</h3>
+            <p>Louvain assigns every person to one community, producing a partition of V. Sharing a community label defines an equivalence relation for that partition.</p>
+          </div>
+          <div>
+            <h3>Counting combinations</h3>
+            <p>For an undirected network of n people, there are C(n, 2) possible distinct pairs. The edge list records which pairs have a relationship.</p>
           </div>
           <div>
             <h3>Graph theory</h3>
-            <p>People are vertices, friendships are edges; paths measure connection.</p>
+            <p>The project models a weighted, undirected graph G = (V, E). Degree counts direct neighbours; edge weights represent friendship strength.</p>
           </div>
           <div>
-            <h3>Counting</h3>
-            <p>Possible pairs among n people: C(n, 2).</p>
+            <h3>Paths and shortest paths</h3>
+            <p>A path is a sequence of connected vertices. Dijkstra finds a minimum-cost route, using cost 1 / weight so stronger ties cost less.</p>
+          </div>
+          <div>
+            <h3>Graph partitions and modularity</h3>
+            <p>Modularity compares within-community edges with the number expected from node degrees. A larger Q indicates stronger community structure for this graph.</p>
           </div>
         </div>
+      </article>
+
+      <article class="card algorithm">
+        <h2>Algorithms used</h2>
+
+        <h3 class="pseudo-heading">Louvain community detection</h3>
+        <p class="muted">Moves nodes between neighbouring groups to increase modularity, then aggregates groups and repeats.</p>
+        <p class="formula">Q = Σᵢ [ lᵢ / m − ( dᵢ / 2m )² ]</p>
+        <p class="muted small">lᵢ: edges inside group i · dᵢ: sum of degrees in group i · m: total edges</p>
+        <pre class="pseudocode"><code>function LOUVAIN(graph):
+    put each node in its own community
+    repeat:
+        move each node to a neighbouring community
+            when the move increases modularity
+        merge each community into a super-node
+    until modularity no longer improves
+    return the communities</code></pre>
+        <p class="muted small">The Python backend calls NetworkX's Louvain implementation with a fixed seed for repeatable results.</p>
+
+        <h3 class="pseudo-heading">Dijkstra shortest path</h3>
+        <p class="muted">Finds the lowest-cost route between the two selected people. Each edge cost is the reciprocal of its friendship weight.</p>
+        <pre class="pseudocode"><code>function DIJKSTRA(graph, start, target):
+    distance[start] = 0
+    distance[all other nodes] = infinity
+    repeatedly choose the unvisited node with least distance
+    for each neighbour of that node:
+        cost = 1 / edge weight
+        if current distance + cost is smaller:
+            update the neighbour's distance and predecessor
+    follow predecessors back from target to build the path
+    return the path, or report that none exists</code></pre>
+        <p class="muted small">The browser JavaScript runs this routine for the selected pair and highlights the resulting route.</p>
       </article>
     </section>
   </main>
