@@ -1,0 +1,13 @@
+source,target,weight
+Ava,Ben,3
+Ava,Cara,2
+Ben,Cara,3
+Ben,Dan,2
+Cara,Dan,2
+Dan,Eli,1
+Finn,Gia,3
+Finn,Hugo,2
+Gia,Hugo,3
+Gia,Iris,2
+Hugo,Iris,2
+Eli,Finn,1
