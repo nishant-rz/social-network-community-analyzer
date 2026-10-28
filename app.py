@@ -205,5 +205,6 @@ def community_plot():
 
 
 if __name__ == "__main__":
-    # debug=True is useful while developing the class project locally.
-    app.run(debug=True, port=5000)
+    # Bind to all interfaces so an IDE browser or forwarded port can reach Flask.
+    # Keep the interactive debugger off while the app is reachable beyond localhost.
+    app.run(host="0.0.0.0", debug=False, port=5000)
